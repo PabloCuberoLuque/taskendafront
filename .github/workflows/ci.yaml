@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ master ]
 
+# Añade estos permisos a nivel global
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
 jobs:
   build-test:
     runs-on: ubuntu-latest
@@ -20,16 +26,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build React app
-        run: npm run build
-
       - name: Lint
         run: npm run lint
+
+      - name: Build React app
+        run: npm run build
 
   codeql:
     name: CodeQL (Frontend)
     runs-on: ubuntu-latest
     needs: build-test
+    permissions:
+      actions: read
+      contents: read
+      security-events: write # Esto es especialmente importante para CodeQL
+    
     steps:
       - uses: actions/checkout@v3
 

@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ master ]
 
-# Añade estos permisos a nivel global
 permissions:
   actions: read
   contents: read
@@ -39,18 +38,18 @@ jobs:
     permissions:
       actions: read
       contents: read
-      security-events: write # Esto es especialmente importante para CodeQL
+      security-events: write
     
     steps:
       - uses: actions/checkout@v3
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: javascript
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v3
 
       - name: Analyze
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3

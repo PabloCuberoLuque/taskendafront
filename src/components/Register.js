@@ -1,6 +1,6 @@
 // src/components/Register.js
 import React, { useState } from 'react';
-import axios from 'axios';
+import {authService} from "../services/authService";
 
 function Register() {
     const [userData, setUserData] = useState({
@@ -22,11 +22,10 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8080/auth/register', userData);
-            if (response.data) {
+            const response = await authService.register(userData);
+            if (response) {
                 setSuccess('Usuario registrado exitosamente!');
                 setError('');
-                // Limpiar el formulario
                 setUserData({
                     username: '',
                     password: '',

@@ -1,36 +1,39 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Añade esta línea
 
-function Login() {
-    const navigate = useNavigate(); // Añade esta línea
+import { useNavigate } from 'react-router-dom';
+import {authService} from "../services/authService"; // Añade esta línea
+
+const Login = () => {
     const [credentials, setCredentials] = useState({
         username: '',
         password: ''
     });
     const [error, setError] = useState('');
+    const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setCredentials(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        
+
         try {
-            const response = await axios.post('http://localhost:8080/auth/login', {
-                username: credentials.username,
-                password: credentials.password
-            });
-            
-            const token = String(response.data);
-            localStorage.setItem('token', token);
-            setCredentials({
-                username: '',
-                password: ''
-            });
-            navigate('/dashboard'); // Añade esta línea
-            
+            const response = await authService.login(credentials);
+            console.log('Login exitoso:', response);
+            navigate('/dashboard');
         } catch (error) {
-            setError(error.response?.data || 'Error al iniciar sesión. Verifica tus credenciales.');
+            setError(error.response?.data?.message || 'Error al iniciar sesión');
         }
+    };
+
+    const goToRegister = () => {
+        navigate('/Register');
     };
 
     return (
@@ -72,6 +75,8 @@ function Login() {
                 <button type="submit" style={styles.button}>
                     Iniciar Sesión
                 </button>
+
+                <button type="button" onClick={goToRegister} style={styles.button}>Registrarse</button>
             </form>
         </div>
     );
